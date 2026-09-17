@@ -1,2 +1,4 @@
 flet
+flet-fastapi
+uvicorn
 requests
