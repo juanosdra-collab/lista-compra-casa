@@ -1,5 +1,6 @@
 import flet as ft
 import requests
+import os
 
 # URL de tu base de datos en Firebase
 FIREBASE_URL = "https://listacompracasa-default-rtdb.firebaseio.com/lista_compra"
@@ -24,7 +25,7 @@ def main(page: ft.Page):
         page.snack_bar.open = True
         page.update()
 
-    # Selector de usuario (configurado de forma compatible con Flet moderno)
+    # Selector de usuario
     dropdown_usuario = ft.Dropdown(
         value="Juan",
         width=120,
@@ -33,7 +34,6 @@ def main(page: ft.Page):
             ft.dropdown.Option("Gema"),
         ]
     )
-    # Asignamos el evento on_change fuera del constructor para evitar el error
     dropdown_usuario.on_change = cambiar_usuario
 
     def cargar_datos_desde_nube():
@@ -112,6 +112,5 @@ def main(page: ft.Page):
     cargar_datos_desde_nube()
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 8000))
     ft.app(target=main, view=ft.AppView.WEB_BROWSER, host="0.0.0.0", port=port)
