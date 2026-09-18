@@ -3,7 +3,6 @@ import flet_fastapi
 import requests
 import os
 
-# URL de tu base de datos en Firebase
 FIREBASE_URL = "https://listacompracasa-default-rtdb.firebaseio.com/lista_compra"
 
 def main(page: ft.Page):
@@ -11,7 +10,6 @@ def main(page: ft.Page):
     page.padding = 20
     page.theme_mode = ft.ThemeMode.LIGHT
     
-    # Estado del usuario actual
     state_usuario = {"nombre": "Juan"}
 
     input_producto = ft.TextField(
@@ -26,7 +24,6 @@ def main(page: ft.Page):
         page.snack_bar.open = True
         page.update()
 
-    # Selector de usuario
     dropdown_usuario = ft.Dropdown(
         value="Juan",
         width=120,
@@ -38,7 +35,6 @@ def main(page: ft.Page):
     dropdown_usuario.on_change = cambiar_usuario
 
     def cargar_datos_desde_nube():
-        """Lee los datos en tiempo real desde Firebase."""
         columna_lista.controls.clear()
         try:
             res = requests.get(f"{FIREBASE_URL}.json")
@@ -111,7 +107,6 @@ def main(page: ft.Page):
 
     cargar_datos_desde_nube()
 
-# Creación de la aplicación FastAPI para Render / Uvicorn
 app = flet_fastapi.app(main)
 
 if __name__ == "__main__":
