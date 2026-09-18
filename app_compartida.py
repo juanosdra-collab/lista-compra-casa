@@ -28,6 +28,8 @@ def main(page: ft.Page):
         options=[
             ft.dropdown.Option("Juan"),
             ft.dropdown.Option("Gema"),
+            ft.dropdown.Option("Aarón"),
+            ft.dropdown.Option("Dylan"),
         ]
     )
     dropdown_usuario.on_change = cambiar_usuario
