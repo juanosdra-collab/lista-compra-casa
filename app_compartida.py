@@ -1,6 +1,5 @@
 import flet as ft
 import requests
-import os
 
 FIREBASE_URL = "https://listacompracasa-default-rtdb.firebaseio.com/lista_compra"
 
@@ -42,31 +41,51 @@ def main(page: ft.Page):
             datos = {}
             print(f"Error de conexión: {err}")
 
-        hay_pendientes = False
+        hay_items = False
         if datos and isinstance(datos, dict):
             for clave, prod in datos.items():
-                if isinstance(prod, dict) and not prod.get("comprado", False):
-                    hay_pendientes = True
-                    
-                    def al_marcar(e, key=clave):
-                        requests.patch(f"{FIREBASE_URL}/{key}.json", json={"comprado": True})
+                if isinstance(prod, dict):
+                    hay_items = True
+                    comprado = prod.get("comprado", False)
+                    nombre_prod = prod.get("nombre", "")
+                    usuario_prod = prod.get("usuario", "")
+
+                    # Tachar texto si está comprado
+                    estilo_texto = ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH, color="grey") if comprado else None
+
+                    def al_comprobar(e, key=clave, estado_actual=comprado):
+                        requests.patch(f"{FIREBASE_URL}/{key}.json", json={"comprado": not estado_actual})
+                        cargar_datos_desde_nube()
+
+                    def al_borrar(e, key=clave):
+                        requests.delete(f"{FIREBASE_URL}/{key}.json")
                         cargar_datos_desde_nube()
 
                     item = ft.Container(
                         content=ft.Row([
                             ft.Checkbox(
-                                label=f"{prod.get('nombre')} (añadido por {prod.get('usuario')})",
-                                on_change=al_marcar,
+                                value=comprado,
+                                on_change=al_comprobar
+                            ),
+                            ft.Text(
+                                f"{nombre_prod} ({usuario_prod})",
+                                style=estilo_texto,
                                 expand=True
+                            ),
+                            ft.IconButton(
+                                icon=ft.Icons.DELETE_OUTLINE,
+                                icon_color=ft.Colors.RED_400,
+                                tooltip="Eliminar producto",
+                                on_click=al_borrar
                             )
                         ]),
-                        padding=10,
-                        bgcolor=ft.Colors.GREY_100,
+                        padding=5,
+                        bgcolor=ft.Colors.GREY_100 if not comprado else ft.Colors.GREY_200,
                         border_radius=8
                     )
                     columna_lista.controls.append(item)
 
-        if not hay_pendientes:
+        if not hay_items:
             columna_lista.controls.append(
                 ft.Text("¡Lista vacía! No hay nada pendiente.", color="grey", italic=True)
             )
