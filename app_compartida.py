@@ -1,6 +1,5 @@
 import flet as ft
 import requests
-import os
 
 FIREBASE_URL = "https://listacompracasa-default-rtdb.firebaseio.com/lista_compra"
 
@@ -132,3 +131,4 @@ def main(page: ft.Page):
 
 if __name__ == "__main__":
     ft.app(target=main)
+    
