@@ -73,7 +73,7 @@ def main(page: ft.Page):
                             ),
                             ft.IconButton(
                                 icon=ft.Icons.DELETE_OUTLINE,
-                                icon_color=ft.Colors.RED_400,
+                                icon_color="red",
                                 tooltip="Eliminar producto",
                                 on_click=al_borrar
                             )
