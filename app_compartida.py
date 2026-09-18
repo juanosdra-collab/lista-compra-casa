@@ -19,9 +19,8 @@ def main(page: ft.Page):
 
     def cambiar_usuario(e):
         state_usuario["nombre"] = dropdown_usuario.value
-        page.snack_bar = ft.SnackBar(ft.Text(f"Modo cambiado a: {state_usuario['nombre']}"))
-        page.snack_bar.open = True
         page.update()
+            
 
     dropdown_usuario = ft.Dropdown(
         value="Juan",
@@ -103,12 +102,13 @@ def main(page: ft.Page):
         if texto:
             nuevo_item = {
                 "nombre": texto,
-                "usuario": state_usuario["nombre"],
+                "usuario": dropdown_usuario.value,  # <--- Lee directo del desplegable
                 "comprado": False
             }
             requests.post(f"{FIREBASE_URL}.json", json=nuevo_item)
             input_producto.value = ""
             cargar_datos_desde_nube()
+
 
     btn_refrescar = ft.IconButton(
         icon=ft.Icons.REFRESH, 
