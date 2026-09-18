@@ -1,5 +1,6 @@
 import flet as ft
 import requests
+import os
 
 FIREBASE_URL = "https://listacompracasa-default-rtdb.firebaseio.com/lista_compra"
 
@@ -74,7 +75,7 @@ def main(page: ft.Page):
                                 on_change=al_comprobar
                             ),
                             ft.Text(
-                                f"{nombre_prod} ({usuario_prod})",
+                                f"{nombre_prod} (añadido por {usuario_prod})",
                                 style=estilo_texto,
                                 expand=True
                             ),
@@ -132,4 +133,5 @@ def main(page: ft.Page):
     cargar_datos_desde_nube()
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    port = int(os.environ.get("PORT", 8080))
+    ft.app(target=main, port=port)
