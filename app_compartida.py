@@ -8,8 +8,6 @@ def main(page: ft.Page):
     page.title = "Lista de la Compra Compartida"
     page.padding = 20
     page.theme_mode = ft.ThemeMode.LIGHT
-    
-    state_usuario = {"nombre": "Juan"}
 
     input_producto = ft.TextField(
         hint_text="Añadir producto (ej: Fregasuelos)...",
@@ -17,14 +15,10 @@ def main(page: ft.Page):
     )
     columna_lista = ft.Column(scroll=ft.ScrollMode.AUTO)
 
-    def cambiar_usuario(e):
-        state_usuario["nombre"] = dropdown_usuario.value
-        page.update()
-            
-
+    # Desplegable de usuarios con Aarón y Dylan incluidos
     dropdown_usuario = ft.Dropdown(
         value="Juan",
-        width=120,
+        width=130,
         options=[
             ft.dropdown.Option("Juan"),
             ft.dropdown.Option("Gema"),
@@ -32,7 +26,6 @@ def main(page: ft.Page):
             ft.dropdown.Option("Dylan"),
         ]
     )
-    dropdown_usuario.on_change = cambiar_usuario
 
     def cargar_datos_desde_nube():
         columna_lista.controls.clear()
@@ -50,19 +43,20 @@ def main(page: ft.Page):
                     hay_items = True
                     comprado = prod.get("comprado", False)
                     nombre_prod = prod.get("nombre", "")
-                    usuario_prod = prod.get("usuario", "")
+                    usuario_prod = prod.get("usuario", "Juan")
 
-                    # Tachar texto e inclinar si está comprado
+                    # Si está comprado, tachamos el texto
                     estilo_texto = ft.TextStyle(
-                        decoration=ft.TextDecoration.LINE_THROUGH, 
-                        color="grey",
-                        italic=True
-                    ) if comprado else None
+                        decoration=ft.TextDecoration.LINE_THROUGH if comprado else ft.TextDecoration.NONE, 
+                        color=ft.Colors.GREY_500 if comprado else ft.Colors.BLACK
+                    )
 
+                    # Acción al pulsar la casilla (Solo TACHA / DESTACHA, NO borra)
                     def al_comprobar(e, key=clave, estado_actual=comprado):
                         requests.patch(f"{FIREBASE_URL}/{key}.json", json={"comprado": not estado_actual})
                         cargar_datos_desde_nube()
 
+                    # Acción al pulsar la papelera (BORRA definitivamente)
                     def al_borrar(e, key=clave):
                         requests.delete(f"{FIREBASE_URL}/{key}.json")
                         cargar_datos_desde_nube()
@@ -86,7 +80,7 @@ def main(page: ft.Page):
                             )
                         ]),
                         padding=5,
-                        bgcolor=ft.Colors.GREY_100 if not comprado else ft.Colors.GREY_200,
+                        bgcolor=ft.Colors.GREY_200 if comprado else ft.Colors.GREY_100,
                         border_radius=8
                     )
                     columna_lista.controls.append(item)
@@ -102,13 +96,12 @@ def main(page: ft.Page):
         if texto:
             nuevo_item = {
                 "nombre": texto,
-                "usuario": dropdown_usuario.value,  # <--- Lee directo del desplegable
+                "usuario": dropdown_usuario.value,
                 "comprado": False
             }
             requests.post(f"{FIREBASE_URL}.json", json=nuevo_item)
             input_producto.value = ""
             cargar_datos_desde_nube()
-
 
     btn_refrescar = ft.IconButton(
         icon=ft.Icons.REFRESH, 
@@ -118,14 +111,19 @@ def main(page: ft.Page):
 
     page.add(
         ft.Row([
-            ft.Text("🛒 Lista de la Compra", size=22, weight=ft.FontWeight.BOLD, expand=True),
+            ft.Text("🛒 Lista de la Compra", size=18, weight=ft.FontWeight.BOLD, expand=True),
             dropdown_usuario,
             btn_refrescar
         ]),
         ft.Divider(),
         ft.Row([
             input_producto,
-            ft.IconButton(icon=ft.Icons.ADD_CIRCLE, icon_size=36, icon_color=ft.Colors.BLUE_600, on_click=agregar_click)
+            ft.IconButton(
+                icon=ft.Icons.ADD_CIRCLE, 
+                icon_size=36, 
+                icon_color=ft.Colors.BLUE_600, 
+                on_click=agregar_click
+            )
         ]),
         columna_lista
     )
@@ -133,5 +131,4 @@ def main(page: ft.Page):
     cargar_datos_desde_nube()
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    ft.app(target=main, port=port)
+    ft.app(target=main)
