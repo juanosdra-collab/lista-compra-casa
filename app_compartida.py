@@ -1,5 +1,4 @@
 import flet as ft
-import flet_fastapi
 import requests
 import os
 
@@ -107,10 +106,5 @@ def main(page: ft.Page):
 
     cargar_datos_desde_nube()
 
-app = flet_fastapi.app(main)
-
 if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
-    
+    ft.app(target=main)
