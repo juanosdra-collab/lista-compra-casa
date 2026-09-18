@@ -52,8 +52,12 @@ def main(page: ft.Page):
                     nombre_prod = prod.get("nombre", "")
                     usuario_prod = prod.get("usuario", "")
 
-                    # Tachar texto si está comprado
-                    estilo_texto = ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH, color="grey") if comprado else None
+                    # Tachar texto e inclinar si está comprado
+                    estilo_texto = ft.TextStyle(
+                        decoration=ft.TextDecoration.LINE_THROUGH, 
+                        color="grey",
+                        italic=True
+                    ) if comprado else None
 
                     def al_comprobar(e, key=clave, estado_actual=comprado):
                         requests.patch(f"{FIREBASE_URL}/{key}.json", json={"comprado": not estado_actual})
