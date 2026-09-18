@@ -11,7 +11,7 @@ def main(page: ft.Page):
     page.padding = 20
     page.theme_mode = ft.ThemeMode.LIGHT
     
-    # Estado del usuario actual (por defecto Juan)
+    # Estado del usuario actual
     state_usuario = {"nombre": "Juan"}
 
     input_producto = ft.TextField(
@@ -48,7 +48,7 @@ def main(page: ft.Page):
             print(f"Error de conexión: {err}")
 
         hay_pendientes = False
-        if datos:
+        if datos and isinstance(datos, dict):
             for clave, prod in datos.items():
                 if isinstance(prod, dict) and not prod.get("comprado", False):
                     hay_pendientes = True
@@ -95,7 +95,6 @@ def main(page: ft.Page):
         on_click=lambda e: cargar_datos_desde_nube()
     )
 
-    # Cabecera con selector de usuario
     page.add(
         ft.Row([
             ft.Text("🛒 Lista de la Compra", size=22, weight=ft.FontWeight.BOLD, expand=True),
@@ -112,10 +111,11 @@ def main(page: ft.Page):
 
     cargar_datos_desde_nube()
 
-# Exponer la app para el servidor FastAPI / Uvicorn
+# Creación de la aplicación FastAPI para Render / Uvicorn
 app = flet_fastapi.app(main)
 
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
+    
