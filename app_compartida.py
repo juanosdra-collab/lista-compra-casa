@@ -15,7 +15,7 @@ def main(page: ft.Page):
     )
     columna_lista = ft.Column(scroll=ft.ScrollMode.AUTO)
 
-    # Desplegable de usuarios con Aarón y Dylan incluidos
+    # Desplegable de usuarios
     dropdown_usuario = ft.Dropdown(
         value="Juan",
         width=130,
@@ -45,18 +45,15 @@ def main(page: ft.Page):
                     nombre_prod = prod.get("nombre", "")
                     usuario_prod = prod.get("usuario", "Juan")
 
-                    # Si está comprado, tachamos el texto
                     estilo_texto = ft.TextStyle(
                         decoration=ft.TextDecoration.LINE_THROUGH if comprado else ft.TextDecoration.NONE, 
                         color="grey" if comprado else "black"
                     )
 
-                    # Acción al pulsar la casilla (Solo TACHA / DESTACHA, NO borra)
                     def al_comprobar(e, key=clave, estado_actual=comprado):
                         requests.patch(f"{FIREBASE_URL}/{key}.json", json={"comprado": not estado_actual})
                         cargar_datos_desde_nube()
 
-                    # Acción al pulsar la papelera (BORRA definitivamente)
                     def al_borrar(e, key=clave):
                         requests.delete(f"{FIREBASE_URL}/{key}.json")
                         cargar_datos_desde_nube()
@@ -72,8 +69,8 @@ def main(page: ft.Page):
                                 style=estilo_texto,
                                 expand=True
                             ),
-                            ft.iconButton(
-                                icon=ft.icons.DELETE_OUTLINE,
+                            ft.IconButton(
+                                icon="delete_outline",
                                 icon_color="red",
                                 tooltip="Eliminar producto",
                                 on_click=al_borrar
@@ -103,8 +100,8 @@ def main(page: ft.Page):
             input_producto.value = ""
             cargar_datos_desde_nube()
 
-    btn_refrescar = ft.iconButton(
-        icon=ft.icons.REFRESH, 
+    btn_refrescar = ft.IconButton(
+        icon="refresh", 
         tooltip="Actualizar lista",
         on_click=lambda e: cargar_datos_desde_nube()
     )
@@ -118,8 +115,8 @@ def main(page: ft.Page):
         ft.Divider(),
         ft.Row([
             input_producto,
-            ft.iconButton(
-                icon=ft.icons.ADD_CIRCLE,
+            ft.IconButton(
+                icon="add_circle",
                 icon_size=36,
                 icon_color="blue",
                 on_click=agregar_click
