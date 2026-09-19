@@ -72,8 +72,8 @@ def main(page: ft.Page):
                                 style=estilo_texto,
                                 expand=True
                             ),
-                            ft.IconButton(
-                                icon=ft.Icons.DELETE_OUTLINE,
+                            ft.iconButton(
+                                icon=ft.icons.DELETE_OUTLINE,
                                 icon_color="red",
                                 tooltip="Eliminar producto",
                                 on_click=al_borrar
@@ -103,8 +103,8 @@ def main(page: ft.Page):
             input_producto.value = ""
             cargar_datos_desde_nube()
 
-    btn_refrescar = ft.IconButton(
-        icon=ft.Icons.REFRESH, 
+    btn_refrescar = ft.iconButton(
+        icon=ft.icons.REFRESH, 
         tooltip="Actualizar lista",
         on_click=lambda e: cargar_datos_desde_nube()
     )
@@ -118,8 +118,8 @@ def main(page: ft.Page):
         ft.Divider(),
         ft.Row([
             input_producto,
-            ft.IconButton(
-                icon=ft.Icons.ADD_CIRCLE,
+            ft.iconButton(
+                icon=ft.icons.ADD_CIRCLE,
                 icon_size=36,
                 icon_color="blue",
                 on_click=agregar_click
