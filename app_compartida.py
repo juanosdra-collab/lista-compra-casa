@@ -1,5 +1,6 @@
 import flet as ft
 import requests
+import os
 
 FIREBASE_URL = "https://listacompracasa-default-rtdb.firebaseio.com/lista_compra"
 
@@ -47,7 +48,7 @@ def main(page: ft.Page):
                     # Si está comprado, tachamos el texto
                     estilo_texto = ft.TextStyle(
                         decoration=ft.TextDecoration.LINE_THROUGH if comprado else ft.TextDecoration.NONE, 
-                        color=ft.Colors.GREY_500 if comprado else ft.Colors.BLACK
+                        color="grey" if comprado else "black"
                     )
 
                     # Acción al pulsar la casilla (Solo TACHA / DESTACHA, NO borra)
@@ -79,7 +80,7 @@ def main(page: ft.Page):
                             )
                         ]),
                         padding=5,
-                        bgcolor=ft.Colors.GREY_200 if comprado else ft.Colors.GREY_100,
+                        bgcolor="grey200" if comprado else "grey100",
                         border_radius=8
                     )
                     columna_lista.controls.append(item)
@@ -118,9 +119,9 @@ def main(page: ft.Page):
         ft.Row([
             input_producto,
             ft.IconButton(
-                icon=ft.Icons.ADD_CIRCLE, 
-                icon_size=36, 
-                icon_color=ft.Colors.BLUE_600, 
+                icon=ft.Icons.ADD_CIRCLE,
+                icon_size=36,
+                icon_color="blue",
                 on_click=agregar_click
             )
         ]),
@@ -130,5 +131,5 @@ def main(page: ft.Page):
     cargar_datos_desde_nube()
 
 if __name__ == "__main__":
-    ft.app(target=main)
-    
+    port = int(os.environ.get("PORT", 8080))
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER, host="0.0.0.0", port=port)
